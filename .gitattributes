@@ -1,2 +1,24 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+clear;
+close all;
+load CovidbyCounty.mat;
+
+transformedData1=eye(224);
+transformedData2=-1*eye(224);
+shifter= zeros(224,1);
+transformedData1=[shifter transformedData1];
+transformedData2=[transformedData2 shifter];
+transformedData = transformedData1 + transformedData2;
+COVID_transformed= transformedData*CNTY_COVID;
+
+[clusteredCOVID, centroids] = kmeans(COVID_transformed, 9, 'Replicates', 20);
+countMatrix= zeros(9,9);
+for i =(1:9)
+    for u=(1:224)
+        if clusteredCOVID(u)==i
+            countMatrix(i,divisionLabels(u+1))=countMatrix(i,divisionLabels(u+1))+1;
+        end
+    end  
+end
+
